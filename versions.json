@@ -1,0 +1,10 @@
+{
+  "updateUrl": "http://update-server:8080/updates.xml",
+  "versions": [
+    { "version": "1.0.0", "schema": 1 },
+    { "version": "1.0.1", "schema": 2 },
+    { "version": "1.0.2", "schema": 3 },
+    { "version": "1.1.0", "schema": 3, "permissions": ["tabs"], "note": "adds a permission with an install warning" },
+    { "version": "1.0.3", "schema": 3, "key": "keys/evil.pem", "file": "ext-1.0.3-evil.crx", "note": "signed with a different key" }
+  ]
+}

@@ -1,0 +1,6 @@
+node_modules
+build
+dist
+artifacts
+keys
+e2e.log

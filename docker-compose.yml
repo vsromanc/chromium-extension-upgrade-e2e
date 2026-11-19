@@ -1,0 +1,29 @@
+name: ext-upgrade-e2e
+
+services:
+  update-server:
+    build: ./update-server
+    volumes:
+      - ./dist/crx:/data/crx:ro
+    networks: [e2e]
+
+  browser:
+    build:
+      context: .
+      dockerfile: browser/Dockerfile
+    depends_on:
+      update-server:
+        condition: service_healthy
+    environment:
+      UPDATE_SERVER: http://update-server:8080
+      HEADLESS: ${HEADLESS:-1}
+      TESTS: ${TESTS:-}
+      CHROMIUM_LOG: ${CHROMIUM_LOG:-0}
+    volumes:
+      - ./artifacts:/app/artifacts
+    shm_size: 1gb
+    networks: [e2e]
+
+networks:
+  e2e:
+    internal: true # no internet access; only the two containers talk
