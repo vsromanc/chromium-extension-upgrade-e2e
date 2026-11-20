@@ -109,6 +109,8 @@ export async function launch(name, { install = 'force', updateFrequency = 3600 }
         // headless automation that only fires via a 3-minute failsafe. Shorten it.
         `--enable-features=ImprovedStartupBestEffortDelay:StartupDelayFailsafeTimeout/${process.env.STARTUP_FAILSAFE ?? '5s'}`,
         `--extensions-update-frequency=${updateFrequency}`,
+        // Test pages are plain http on *.test; don't try https first.
+        '--disable-features=HttpsUpgrades,HttpsFirstBalancedModeAutoEnable',
         ...(verbose
           ? [
               '--enable-logging=stderr',
@@ -171,6 +173,21 @@ export async function launch(name, { install = 'force', updateFrequency = 3600 }
     }, `Chromium to install ${version}`, timeout);
   };
 
+  /** Evaluate fn(...args) in the extension page, then close it so the extension can go idle. */
+  const inExt = async (fn, ...args) => {
+    const r = await (await ext()).evaluate(fn, ...args);
+    await closeExt();
+    return r;
+  };
+
+  /** Open a web page in a new tab. wait=false: don't wait for load; page.loaded is the navigation promise. */
+  const openPage = async (url, { wait = true } = {}) => {
+    const p = await browser.newPage();
+    p.loaded = p.goto(url, { waitUntil: 'load', timeout: 90_000 });
+    if (wait) await p.loaded;
+    return p;
+  };
+
   /** Read extension storage through its page (opens it if needed). */
   const state = async () => (await ext()).evaluate(() => self.__test.state());
 
@@ -225,7 +242,7 @@ export async function launch(name, { install = 'force', updateFrequency = 3600 }
 
   return {
     id, ext, closeExt, internals, installedVersion, waitForVersion, savedSettings,
-    state, addItems, waitForInstalledEvent, checkForUpdate, restart, close,
+    state, addItems, waitForInstalledEvent, checkForUpdate, restart, close, inExt, openPage,
   };
 }
 

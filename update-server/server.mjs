@@ -9,6 +9,11 @@
 //   POST /_admin/reset    -> clear request log
 //   GET  /_admin/meta     -> { id, versions, published }
 //   GET  /_admin/health
+// Test pages for the content-script scenario (any hostname; compose aliases
+// site-a/b/c.test point here):
+//   /page.html /other.html /private/page.html /nocs/page.html -> page + iframe of site-b.test/frame.html
+//   /frame.html                                               -> page without iframe
+//   /slow.html?ms=N  -> like page.html, but a parser-blocking /slow.js?ms=N keeps it loading for N ms
 import { createReadStream, existsSync, readFileSync } from 'node:fs';
 import { createServer } from 'node:http';
 import { join } from 'node:path';
@@ -48,10 +53,24 @@ const readBody = (req) =>
 createServer(async (req, res) => {
   const url = new URL(req.url, BASE);
   const body = await readBody(req);
-  const send = (code, type, payload) => {
-    res.writeHead(code, { 'content-type': type, 'cache-control': 'no-store' });
+  // Test pages use no-cache, not no-store: no-store pages never enter the back/forward cache.
+  const send = (code, type, payload, cache = 'no-store') => {
+    res.writeHead(code, { 'content-type': type, 'cache-control': cache });
     res.end(payload);
   };
+
+  if (/^\/((private|nocs)\/page|page|other|frame|slow)\.html$/.test(url.pathname)) {
+    const frame = url.pathname === '/frame.html' ? '' : `<iframe src="http://site-b.test:${PORT}/frame.html"></iframe>`;
+    // slow.html: a parser-blocking script in <head> keeps the document 'loading' with no <body>.
+    const slow = url.pathname === '/slow.html' ? `<script src="/slow.js?ms=${Number(url.searchParams.get('ms') ?? 15000)}"></script>` : '';
+    // data-restored="true" once the page comes back from the back/forward cache.
+    return send(200, 'text/html', `<!doctype html><meta charset="utf-8"><title>${req.headers.host}${url.pathname}</title>${slow}
+<script>addEventListener('pageshow', (e) => { if (e.persisted) document.documentElement.dataset.restored = 'true'; });</script>
+<p id="css-target">styled by cs.css</p><button id="btn">click</button>${frame}`, 'no-cache');
+  }
+  if (url.pathname === '/slow.js') {
+    return setTimeout(() => send(200, 'text/javascript', '// slow'), Number(url.searchParams.get('ms') ?? 15000));
+  }
 
   if (!url.pathname.startsWith('/_admin/')) {
     const entry = { at: new Date().toISOString(), method: req.method, path: url.pathname, query: url.search, mode: published.mode };

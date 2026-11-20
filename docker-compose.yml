@@ -5,7 +5,9 @@ services:
     build: ./update-server
     volumes:
       - ./dist/crx:/data/crx:ro
-    networks: [e2e]
+    networks:
+      e2e:
+        aliases: [site-a.test, site-b.test, site-c.test] # test pages for content scripts
 
   browser:
     build:

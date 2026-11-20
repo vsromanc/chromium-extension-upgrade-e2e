@@ -6,7 +6,7 @@ import { join, resolve } from 'node:path';
 import crx3 from 'crx3';
 
 const root = resolve(import.meta.dirname, '..');
-const { updateUrl, versions } = JSON.parse(readFileSync(join(root, 'versions.json'), 'utf8'));
+const { updateUrl, versions, patches = {} } = JSON.parse(readFileSync(join(root, 'versions.json'), 'utf8'));
 const mainKey = join(root, 'keys', 'key.pem');
 const buildDir = join(root, 'build');
 const distDir = join(root, 'dist');
@@ -44,6 +44,10 @@ for (const v of versions) {
   }
   const manifestPath = join(out, 'manifest.json');
   const manifest = JSON.parse(readFileSync(manifestPath, 'utf8'));
+  // Optional manifest patch (e.g. content scripts); permissions are merged, other keys set.
+  for (const [k, val] of Object.entries(v.patch ? patches[v.patch] : {})) {
+    manifest[k] = k === 'permissions' ? [...manifest.permissions, ...val] : val;
+  }
   manifest.permissions = [...new Set([...manifest.permissions, ...permissions])];
   writeFileSync(manifestPath, JSON.stringify(manifest, null, 2));
 

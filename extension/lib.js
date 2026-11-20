@@ -19,4 +19,6 @@ self.__test = {
       await chrome.storage.local.set({ data });
     }),
   checkForUpdate: () => chrome.runtime.requestUpdateCheck(),
+  set: (items) => chrome.storage.local.set(items),
+  reinject: () => reinjectContentScripts(), // reinject.js
 };
