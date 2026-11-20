@@ -1,0 +1,9 @@
+{
+  "manifest_version": 3,
+  "name": "Focus Timer",
+  "version": "2.1.0",
+  "background": { "service_worker": "sw.js" },
+  "permissions": ["storage", "alarms", "notifications"],
+  "optional_host_permissions": ["https://*/*"],
+  "action": { "default_popup": "popup.html" }
+}

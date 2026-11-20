@@ -1,0 +1,2 @@
+.tn-panel { position: fixed; top: 12px; right: 12px; width: 240px; z-index: 2147483647; font: 13px/1.4 system-ui; }
+.tn-note { background: #fff8b0; border: 1px solid #e0d060; padding: 6px 8px; margin-bottom: 6px; box-shadow: 0 1px 3px rgba(0,0,0,.2); }

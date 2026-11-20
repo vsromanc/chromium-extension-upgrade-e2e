@@ -1,0 +1,1 @@
+{ "name": "tab-notes", "version": "3.4.0", "private": true, "scripts": { "zip": "cd src && zip -r ../tab-notes.zip ." } }

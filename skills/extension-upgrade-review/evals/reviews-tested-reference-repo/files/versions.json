@@ -1,0 +1,43 @@
+{
+  "updateUrl": "http://update-server:8080/updates.xml",
+  "versions": [
+    { "version": "1.0.0", "schema": 1 },
+    { "version": "1.0.1", "schema": 2 },
+    { "version": "1.0.2", "schema": 3 },
+    { "version": "1.1.0", "schema": 3, "permissions": ["tabs"], "note": "adds a permission with an install warning" },
+    { "version": "1.0.3", "schema": 3, "key": "keys/evil.pem", "file": "ext-1.0.3-evil.crx", "note": "signed with a different key" },
+    { "version": "2.0.0", "schema": 3, "patch": "content-scripts" },
+    { "version": "2.0.1", "schema": 3, "patch": "content-scripts" },
+    { "version": "2.0.2", "schema": 3, "patch": "content-scripts" }
+  ],
+  "patches": {
+    "content-scripts": {
+      "permissions": ["scripting", "alarms"],
+      "host_permissions": ["http://*.test/*"],
+      "content_scripts": [
+        {
+          "matches": ["http://*.test/*"],
+          "exclude_matches": ["http://*/private/*"],
+          "exclude_globs": ["*/nocs/*"],
+          "js": ["cs-lifecycle.js", "cs-main.js"],
+          "world": "MAIN",
+          "run_at": "document_start",
+          "all_frames": true
+        },
+        {
+          "matches": ["http://*.test/*"],
+          "exclude_matches": ["http://*/private/*"],
+          "exclude_globs": ["*/nocs/*"],
+          "css": ["cs.css"],
+          "js": ["cs-lifecycle.js", "cs.js"],
+          "all_frames": true
+        },
+        {
+          "matches": ["http://site-a.test/*"],
+          "include_globs": ["*/page.html*"],
+          "js": ["cs-lifecycle.js", "cs-badge.js"]
+        }
+      ]
+    }
+  }
+}

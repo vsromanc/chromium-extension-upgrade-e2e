@@ -1,0 +1,17 @@
+{
+  "name": "ext-upgrade-e2e",
+  "version": "1.0.0",
+  "description": "E2E tests for real upgrades of a self-hosted Chromium extension, in Docker",
+  "scripts": {
+    "build": "node scripts/pack.mjs",
+    "e2e": "make e2e"
+  },
+  "type": "module",
+  "devDependencies": {
+    "crx3": "^2.0.0"
+  },
+  "dependencies": {
+    "puppeteer-core": "^25.18.1"
+  },
+  "private": true
+}

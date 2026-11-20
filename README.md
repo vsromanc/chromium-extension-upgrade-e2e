@@ -301,6 +301,13 @@ are mainly useful with `prodversionmin` to serve a fallback build to older brows
 - `extension/` — source; `__VERSION__`, `__SCHEMA__`, `__UPDATE_URL__` substituted per version.
   `reinject.js` + `cs-*.js` = the content-script approach above (`data-ue` reporting is a test probe).
 - `docs/content-scripts-examples.md` — how to use that approach in your own extension (code examples).
+- `docs/upgrade-best-practices.md` — designing an extension for seamless upgrades: messaging, data, registrations, UI, releases, testing.
+- `skills/extension-upgrade-review/` — a Claude Code skill that reviews any MV3 extension project against
+  these guidelines. It's read-only: a report with `file:line` evidence and suggested fixes. Install:
+  `cp -r skills/extension-upgrade-review ~/.claude/skills/`, then ask Claude Code to "review this
+  extension for upgrade safety". It includes a dependency-free scanner (`scripts/scan.mjs`) that
+  limits the review to code reachable from the manifest's entry points, a checklist, fix patterns,
+  the tested reference implementations, and `evals/` test cases (not run yet).
   `lib.js` + `test.html` are test hooks (strip them from production builds).
 - `keys/key.pem` — signing key, generated on first build. **Keep it**: a new key = a new extension ID.
 - `update-server/` — dependency-free Node server (gupdate XML, CRX hosting, admin API).

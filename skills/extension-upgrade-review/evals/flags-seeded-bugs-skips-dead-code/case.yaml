@@ -1,0 +1,6 @@
+schema_version: "1.1"
+name: flags-seeded-bugs-skips-dead-code
+expected_outcome: |
+  A read-only upgrade-safety review of Tab Notes. It flags: no re-injection of content scripts into open tabs after an update; orphaned content scripts that keep calling chrome.* without handling the invalidated context; onMessage registered inside an async init after an await (missed messages after a worker restart); contextMenus.create in onInstalled without removeAll (duplicate id); a popup draft saved only on unload; migration only in onInstalled for updates, with handlers not waiting for it; worker globals as state; no upgrade tests. Findings cite file:line from live code only: nothing from legacy/old-background.js or src/utils/unused-shadow.js.
+context:
+  scaffold_script: place-files.sh

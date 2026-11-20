@@ -1,0 +1,6 @@
+schema_version: "1.1"
+name: reviews-tested-reference-repo
+expected_outcome: |
+  A review that recognises the extension already re-injects content scripts once per load and runs a single-instance lifecycle with state handoff (content-script area passes, at most low-severity known gaps such as matching iframes inside pages without host access). It flags that the stored-data migration in extension/sw.js runs only inside onInstalled (C2). It treats scripts/pack.mjs and tests/ as tooling, not extension code, and credits the e2e upgrade tests.
+context:
+  scaffold_script: place-files.sh

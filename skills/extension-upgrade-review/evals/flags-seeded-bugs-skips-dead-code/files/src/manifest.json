@@ -1,0 +1,24 @@
+{
+  "manifest_version": 3,
+  "name": "Tab Notes",
+  "version": "3.4.0",
+  "description": "Sticky notes on any page.",
+  "background": { "service_worker": "background.js", "type": "module" },
+  "permissions": ["storage", "contextMenus", "scripting"],
+  "host_permissions": ["<all_urls>"],
+  "action": { "default_popup": "popup/popup.html" },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content/page-hook.js"],
+      "world": "MAIN",
+      "run_at": "document_start"
+    },
+    {
+      "matches": ["<all_urls>"],
+      "exclude_matches": ["https://accounts.google.com/*"],
+      "css": ["content/notes.css"],
+      "js": ["content/notes.js"]
+    }
+  ]
+}

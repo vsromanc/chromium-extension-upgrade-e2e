@@ -1,0 +1,69 @@
+{
+  "manifest_version": 3,
+  "name": "Upgrade E2E Prototype",
+  "version": "2.0.2",
+  "description": "Self-hosted extension used to exercise real upgrades.",
+  "update_url": "http://update-server:8080/updates.xml",
+  "background": {
+    "service_worker": "sw.js"
+  },
+  "permissions": [
+    "storage",
+    "scripting",
+    "alarms"
+  ],
+  "host_permissions": [
+    "http://*.test/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "http://*.test/*"
+      ],
+      "exclude_matches": [
+        "http://*/private/*"
+      ],
+      "exclude_globs": [
+        "*/nocs/*"
+      ],
+      "js": [
+        "cs-lifecycle.js",
+        "cs-main.js"
+      ],
+      "world": "MAIN",
+      "run_at": "document_start",
+      "all_frames": true
+    },
+    {
+      "matches": [
+        "http://*.test/*"
+      ],
+      "exclude_matches": [
+        "http://*/private/*"
+      ],
+      "exclude_globs": [
+        "*/nocs/*"
+      ],
+      "css": [
+        "cs.css"
+      ],
+      "js": [
+        "cs-lifecycle.js",
+        "cs.js"
+      ],
+      "all_frames": true
+    },
+    {
+      "matches": [
+        "http://site-a.test/*"
+      ],
+      "include_globs": [
+        "*/page.html*"
+      ],
+      "js": [
+        "cs-lifecycle.js",
+        "cs-badge.js"
+      ]
+    }
+  ]
+}

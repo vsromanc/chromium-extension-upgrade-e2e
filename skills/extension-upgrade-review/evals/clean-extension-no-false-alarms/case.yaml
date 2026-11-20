@@ -1,0 +1,6 @@
+schema_version: "1.1"
+name: clean-extension-no-false-alarms
+expected_outcome: |
+  A short review of a small, well-built extension without content scripts. The content-script section is marked not applicable. No High findings: listeners are top-level, migrations run on every worker start and gate the handlers, the alarm is created only if missing, updates apply when no session runs, the popup saves on input. At most Low/Medium notes (e.g. no upgrade test, contextMenus unused).
+context:
+  scaffold_script: place-files.sh
